@@ -20,22 +20,37 @@ if (process.env.FRONTEND_URL) {
   allowedOrigins.push(process.env.FRONTEND_URL);
 }
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
+// CORS configuration for Vercel
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
 
-      // Check if origin is in allowed list or matches Vercel preview URLs
-      if (allowedOrigins.includes(origin) || origin.includes("vercel.app")) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+  // Allow all Vercel URLs and localhost
+  if (
+    !origin ||
+    origin.includes("vercel.app") ||
+    origin.includes("localhost") ||
+    allowedOrigins.includes(origin)
+  ) {
+    res.setHeader("Access-Control-Allow-Origin", origin || "*");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
+  }
+
+  // Handle preflight
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
+
 app.use(express.json());
 
 // Routes
