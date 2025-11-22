@@ -1,4 +1,4 @@
-# Healthcare Portal 🏥
+# Healthcare Portal
 
 A modern doctor-patient healthcare management system with activity tracking, appointments, and medical records.
 
@@ -17,25 +17,25 @@ The system follows a microservices architecture with:
 
 ### For Patients
 
-- 📊 Track daily health metrics (Steps, Active Time, Sleep)
-- 📅 Book and manage appointments
-- 📋 View medical records and prescriptions
-- 🎯 Set and track health goals
-- 👤 Manage personal profile
+- Track daily health metrics (Steps, Active Time, Sleep)
+- Book and manage appointments
+- View medical records and prescriptions
+- Set and track health goals
+- Manage personal profile
 
 ### For Doctors
 
-- 👥 View patient list
-- 📅 Manage appointments (confirm/complete)
-- 📝 Create medical records
-- 💊 Add prescriptions
+- View patient list
+- Manage appointments (confirm/complete)
+- Create medical records
+- Add prescriptions
 
 ### Security
 
-- 🔐 JWT authentication
-- 🔒 Password hashing with bcrypt
-- 🛡️ Protected routes
-- 🔑 Role-based access (Patient/Doctor)
+- JWT authentication
+- Password hashing with bcrypt
+- Protected routes
+- Role-based access (Patient/Doctor)
 
 ## Tech Stack
 
@@ -268,6 +268,36 @@ npm run frontend
 ## License
 
 MIT
+
+## Deployment
+
+### Deploy to Vercel
+
+This project is ready to deploy to Vercel with GitHub integration.
+
+**Quick Deploy:**
+
+1. See `DEPLOY_NOW.md` for fastest deployment steps
+2. See `VERCEL_GITHUB_SETUP.md` for detailed GitHub integration guide
+3. See `DEPLOYMENT_CHECKLIST.md` for complete checklist
+
+**CLI Deployment:**
+
+```bash
+./deploy.sh
+```
+
+**Files Created:**
+
+- `vercel.json` - Root configuration
+- `backend/vercel.json` - Backend configuration
+- `frontend/vercel.json` - Frontend configuration
+- `.vercelignore` - Files to ignore during deployment
+
+**Environment Variables for Production:**
+
+- Backend: `MONGODB_URI`, `JWT_SECRET`, `FRONTEND_URL`, `NODE_ENV`
+- Frontend: `VITE_API_URL`
 
 ## Support
 
