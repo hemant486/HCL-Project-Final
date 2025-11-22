@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authAPI } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
-function Register({ setUser }) {
+function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -12,22 +12,22 @@ function Register({ setUser }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    try {
-      const response = await authAPI.register(formData);
-      localStorage.setItem("token", response.data.token);
-      setUser(response.data.user);
+    const result = await register(formData);
+
+    if (result.success) {
       navigate("/dashboard");
-    } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
-    } finally {
-      setLoading(false);
+    } else {
+      setError(result.error);
     }
+
+    setLoading(false);
   };
 
   return (

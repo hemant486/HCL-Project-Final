@@ -4,82 +4,45 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Navbar from "./components/Navbar";
+import PublicNavbar from "./components/PublicNavbar";
 import Home from "./pages/Home";
-import About from "./pages/About";
-import Services from "./pages/Services";
-import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import HealthInfo from "./pages/HealthInfo";
 import Appointments from "./pages/Appointments";
 import MedicalRecords from "./pages/MedicalRecords";
-import Navbar from "./components/Navbar";
-import PublicNavbar from "./components/PublicNavbar";
-import { authAPI } from "./services/api";
+import HealthInfo from "./pages/HealthInfo";
+import Goals from "./pages/Goals";
+import Profile from "./pages/Profile";
 
-function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      authAPI
-        .getMe()
-        .then((res) => setUser(res.data))
-        .catch(() => localStorage.removeItem("token"))
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-  };
+function AppRoutes() {
+  const { user, loading, logout } = useAuth();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
-          <p className="mt-4 text-gray-600 font-medium">
-            Loading Healthcare Portal...
-          </p>
-        </div>
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
       </div>
     );
   }
 
   return (
     <Router>
-      {user ? <Navbar user={user} onLogout={handleLogout} /> : <PublicNavbar />}
+      {user ? <Navbar user={user} onLogout={logout} /> : <PublicNavbar />}
       <Routes>
         <Route
           path="/"
           element={!user ? <Home /> : <Navigate to="/dashboard" />}
         />
-        <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contact />} />
         <Route
           path="/login"
-          element={
-            !user ? <Login setUser={setUser} /> : <Navigate to="/dashboard" />
-          }
+          element={!user ? <Login /> : <Navigate to="/dashboard" />}
         />
         <Route
           path="/register"
-          element={
-            !user ? (
-              <Register setUser={setUser} />
-            ) : (
-              <Navigate to="/dashboard" />
-            )
-          }
+          element={!user ? <Register /> : <Navigate to="/dashboard" />}
         />
         <Route
           path="/dashboard"
@@ -97,9 +60,20 @@ function App() {
           path="/health-info"
           element={user ? <HealthInfo /> : <Navigate to="/" />}
         />
+        <Route path="/goals" element={user ? <Goals /> : <Navigate to="/" />} />
+        <Route
+          path="/profile"
+          element={user ? <Profile /> : <Navigate to="/" />}
+        />
       </Routes>
     </Router>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  );
+}

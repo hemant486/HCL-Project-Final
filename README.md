@@ -1,263 +1,278 @@
 # Healthcare Portal 🏥
 
-A comprehensive full-stack healthcare management application with modern UI, secure authentication, and role-based features for patients and doctors.
+A modern doctor-patient healthcare management system with activity tracking, appointments, and medical records.
 
-## ✨ Features
+## Architecture
 
-### 🔐 Authentication & Security
+![Healthcare Portal Architecture](./architecture-diagram.png)
 
-- JWT token-based authentication
-- Password hashing with bcrypt (10 rounds)
-- Protected routes with middleware
-- Role-based access control (Patient/Doctor/Admin)
-- Automatic token validation
+The system follows a microservices architecture with:
 
-### 👨‍⚕️ Patient Features
+- **React Frontend** - Patient Portal, Provider Portal, and Public Health Page
+- **Express API Gateway** - Routes and authenticates requests
+- **Backend Services** - Tracker, Provider, Patient, and Appointment services
+- **MongoDB** - Stores Goals, Users, Patients, and Appointments data
 
-- **Interactive Dashboard** with health metrics overview
-- **Appointment Management** - Book, view, and cancel appointments
-- **Medical Records** - View diagnosis, treatments, and prescriptions
-- **Health Information** - Track blood pressure, heart rate, weight, height
-- **Medication Tracking** - Manage allergies and current medications
-- **Medical History** - Maintain comprehensive health records
+## Features
 
-### 🩺 Doctor Features
+### For Patients
 
-- **Doctor Dashboard** with patient overview
-- **Appointment Management** - View, confirm, and complete appointments
-- **Patient List** - Access to all registered patients
-- **Medical Records** - Create and manage patient records
-- **Today's Schedule** - Quick view of daily appointments
+- 📊 Track daily health metrics (Steps, Active Time, Sleep)
+- 📅 Book and manage appointments
+- 📋 View medical records and prescriptions
+- 🎯 Set and track health goals
+- 👤 Manage personal profile
 
-### 🎨 Modern UI/UX
+### For Doctors
 
-- Gradient designs with Tailwind CSS
-- Fully responsive layout for all devices
-- Interactive cards with hover effects
-- Loading states and smooth animations
-- Icon-enhanced navigation
-- Status badges for appointments
-- Real-time data updates
+- 👥 View patient list
+- 📅 Manage appointments (confirm/complete)
+- 📝 Create medical records
+- 💊 Add prescriptions
+
+### Security
+
+- 🔐 JWT authentication
+- 🔒 Password hashing with bcrypt
+- 🛡️ Protected routes
+- 🔑 Role-based access (Patient/Doctor)
 
 ## Tech Stack
 
 **Frontend:**
 
-- React 18
-- React Router DOM
-- Axios
+- React 18 + Vite
 - Tailwind CSS
-- Vite
+- React Router
+- Axios
 
 **Backend:**
 
-- Node.js
-- Express
-- MongoDB with Mongoose
-- JWT for authentication
-- bcryptjs for password hashing
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT authentication
+- bcryptjs
 
-## Setup Instructions
+## Quick Start
 
-### Prerequisites
-
-- Node.js (v16+)
-- MongoDB (local or Atlas)
-
-### Backend Setup
-
-1. Navigate to backend directory:
+### 1. Install Dependencies
 
 ```bash
+# Backend
 cd backend
-```
-
-2. Install dependencies:
-
-```bash
 npm install
-```
 
-3. Create `.env` file:
-
-```bash
-cp .env.example .env
-```
-
-4. Update `.env` with your MongoDB URI and JWT secret:
-
-```
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/healthcare-portal
-JWT_SECRET=your_secure_jwt_secret_key
-```
-
-5. Start the backend server:
-
-```bash
-npm run dev
-```
-
-Backend will run on http://localhost:5000
-
-### Frontend Setup
-
-1. Navigate to frontend directory:
-
-```bash
+# Frontend
 cd frontend
-```
-
-2. Install dependencies:
-
-```bash
 npm install
 ```
 
-3. Start the development server:
+### 2. Setup Environment
+
+Create `backend/.env`:
+
+```env
+PORT=5001
+MONGODB_URI=mongodb+srv://root:root@backend.wr7hftb.mongodb.net/healthcare-portal?retryWrites=true&w=majority
+JWT_SECRET=healthcare_portal_super_secret_key_2024
+```
+
+### 3. Run the Application
 
 ```bash
+# From root directory
 npm run dev
 ```
 
-Frontend will run on http://localhost:3000
+Or run separately:
 
-## API Endpoints
+```bash
+# Terminal 1 - Backend
+cd backend
+npm run dev
 
-### Authentication
+# Terminal 2 - Frontend
+cd frontend
+npm run dev
+```
 
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user (protected)
+**Access the app:**
 
-### Health Information
-
-- `GET /api/health` - Get health info (protected)
-- `POST /api/health` - Create/Update health info (protected)
+- Frontend: http://localhost:3000
+- Backend: http://localhost:5001
 
 ## Project Structure
 
 ```
 healthcare-portal/
 ├── backend/
-│   ├── config/
-│   │   └── db.js
-│   ├── middleware/
-│   │   └── auth.js
-│   ├── models/
-│   │   ├── User.js
-│   │   └── HealthInfo.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   └── health.js
-│   ├── .env.example
-│   ├── package.json
-│   └── server.js
+│   ├── models/          # Database models
+│   ├── routes/          # API routes
+│   ├── middleware/      # Auth middleware
+│   ├── config/          # Database config
+│   └── server.js        # Entry point
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   │   └── Navbar.jsx
-│   │   ├── pages/
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   └── HealthInfo.jsx
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── index.html
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── vite.config.js
+│   │   ├── components/  # Reusable components
+│   │   ├── pages/       # Page components
+│   │   ├── context/     # React context
+│   │   └── services/    # API services
+│   └── package.json
 └── README.md
 ```
 
-## 🚀 Usage
+## Usage
 
-### For Patients
+### Register
 
-1. Register with "Patient" role
-2. Login to access your dashboard
-3. View health metrics at a glance
-4. Book appointments with doctors
-5. Update health information
-6. View medical records and prescriptions
+1. Go to http://localhost:3000
+2. Click "Register"
+3. Choose role (Patient or Doctor)
+4. Fill in details and submit
 
-### For Doctors
+### Login
 
-1. Register with "Doctor" role
-2. Access doctor dashboard
-3. View today's appointments
-4. Confirm/complete patient appointments
-5. Access patient list
-6. Create medical records for patients
+1. Click "Login"
+2. Enter email and password
+3. Access your dashboard
 
-## 📸 Screenshots
+### Track Health
 
-The application includes:
+1. Go to "Health Info"
+2. Enter daily metrics:
+   - Steps (steps/day)
+   - Active Time (minutes/day)
+   - Sleep (hours/night)
+3. Add weight, height, allergies, medications
+4. Save information
 
-- Modern login/register pages with gradient backgrounds
-- Interactive dashboard with health metric cards
-- Appointment booking and management interface
-- Medical records viewer with detailed information
-- Health information form with comprehensive fields
-- Enhanced navigation with icons
+### Book Appointment
 
-## 🔒 Security Features
+1. Go to "Appointments"
+2. Click "Book Appointment"
+3. Select date, time, and reason
+4. Submit
 
-- **Password Security**: bcrypt hashing with 10 rounds
-- **Token Authentication**: JWT with 7-day expiration
-- **Protected Routes**: Middleware authentication on all sensitive endpoints
-- **Role-Based Access**: Different permissions for patients and doctors
-- **Secure Storage**: Tokens stored in localStorage with automatic validation
-- **CORS Protection**: Configured for secure cross-origin requests
+### Set Goals
 
-## 🛠️ Technologies Used
+1. Go to "Goals"
+2. Click "New Goal"
+3. Set target and deadline
+4. Track progress
 
-**Frontend:**
+## API Endpoints
 
-- React 18 with Hooks
-- Vite (Fast build tool)
-- React Router DOM v6
-- Axios for HTTP requests
-- Tailwind CSS for styling
-- SVG icons for UI elements
+### Authentication
 
-**Backend:**
+- `POST /api/auth/register` - Register user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/me` - Get current user
 
-- Node.js with Express
-- MongoDB with Mongoose ODM
-- JWT for authentication
-- bcryptjs for password hashing
-- CORS middleware
-- dotenv for environment variables
+### Health
 
-## 📝 Environment Variables
+- `GET /api/health` - Get health info
+- `POST /api/health` - Update health info
 
-Create `.env` file in backend directory:
+### Appointments
 
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/healthcare-portal
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
+- `GET /api/appointments` - Get appointments
+- `POST /api/appointments` - Create appointment
+- `PATCH /api/appointments/:id` - Update appointment
+
+### Medical Records
+
+- `GET /api/records` - Get medical records
+- `POST /api/records` - Create record (doctors only)
+
+### Goals
+
+- `GET /api/goals` - Get health goals
+- `POST /api/goals` - Create goal
+- `PATCH /api/goals/:id` - Update goal
+- `DELETE /api/goals/:id` - Delete goal
+
+## Color Theme
+
+The app uses a soft, healthcare-themed color palette:
+
+- **Teal/Green** - Primary navigation and health
+- **Violet** - Steps tracking
+- **Orange** - Active time
+- **Indigo** - Sleep tracking
+- **Emerald** - Body metrics
+- **Cyan** - Appointments
+- **Rose** - Medical information
+
+## Database Models
+
+### User
+
+- name, email, password (hashed)
+- role (patient/doctor)
+- phone, address, dateOfBirth, gender
+
+### HealthInfo
+
+- steps, activeTime, sleep
+- weight, height
+- allergies, medications
+- medicalHistory
+
+### Appointment
+
+- patientId, doctorId
+- date, time, reason
+- status (pending/confirmed/completed/cancelled)
+
+### MedicalRecord
+
+- patientId, doctorId
+- diagnosis, treatment
+- prescription, notes
+
+### Goal
+
+- title, description
+- targetValue, currentValue, unit
+- progress (0-100%)
+- deadline
+
+## Development
+
+```bash
+# Install all dependencies
+npm run install-all
+
+# Run both frontend and backend
+npm run dev
+
+# Run backend only
+npm run backend
+
+# Run frontend only
+npm run frontend
 ```
 
-## 🤝 Contributing
+## Environment Variables
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+**Backend (.env):**
 
-## 📄 License
+- `PORT` - Server port (default: 5001)
+- `MONGODB_URI` - MongoDB connection string
+- `JWT_SECRET` - Secret key for JWT tokens
+
+**Frontend (.env):**
+
+- `VITE_API_URL` - Backend API URL (default: http://localhost:5001/api)
+
+## License
 
 MIT
 
-## 👨‍💻 Author
+## Support
+
+For issues or questions, check the MongoDB connection and ensure all dependencies are installed correctly.
+
+---
 
 Built with ❤️ for healthcare management
-
-## 🙏 Acknowledgments
-
-- Based on healthcare portal requirements
-- Designed for ease of use and security
-- Built with modern web technologies
