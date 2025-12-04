@@ -21,6 +21,7 @@ import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import DoctorPatients from "./pages/doctor/DoctorPatients";
 import DoctorSchedule from "./pages/doctor/DoctorSchedule";
+import PatientDetail from "./pages/doctor/PatientDetail";
 
 function AppRoutes() {
   const { user, loading, logout } = useAuth();
@@ -105,6 +106,10 @@ function AppRoutes() {
         <Route
           path="/doctor/patients"
           element={user && isDoctor ? <DoctorPatients /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/doctor/patients/:patientId"
+          element={user && isDoctor ? <PatientDetail /> : <Navigate to="/" />}
         />
         <Route
           path="/doctor/schedule"

@@ -1,31 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "../services/api";
+import BookAppointment from "../components/BookAppointment";
 
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
-  const [doctors, setDoctors] = useState([]);
-  const [showForm, setShowForm] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    doctorId: "",
-    date: "",
-    time: "",
-    reason: "",
-  });
 
   useEffect(() => {
     fetchAppointments();
-    fetchDoctors();
   }, []);
-
-  const fetchDoctors = async () => {
-    try {
-      const res = await axios.get("/auth/doctors");
-      setDoctors(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const fetchAppointments = async () => {
     try {
@@ -38,17 +22,8 @@ function Appointments() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("/appointments", formData);
-      setShowForm(false);
-      setFormData({ doctorId: "", date: "", time: "", reason: "" });
-      fetchAppointments();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to book appointment. Please try again.");
-    }
+  const handleBookingSuccess = () => {
+    fetchAppointments();
   };
 
   const handleCancel = async (id) => {
@@ -84,91 +59,18 @@ function Appointments() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Appointments</h1>
           <button
-            onClick={() => setShowForm(!showForm)}
+            onClick={() => setShowBooking(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition"
           >
-            {showForm ? "Cancel" : "Book Appointment"}
+            Book Appointment
           </button>
         </div>
 
-        {showForm && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4">Book New Appointment</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Select Doctor
-                </label>
-                <select
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={formData.doctorId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, doctorId: e.target.value })
-                  }
-                >
-                  <option value="">Choose a doctor...</option>
-                  {doctors.map((doctor) => (
-                    <option key={doctor._id} value={doctor._id}>
-                      Dr. {doctor.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    min={new Date().toISOString().split("T")[0]}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={formData.date}
-                    onChange={(e) =>
-                      setFormData({ ...formData, date: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Time
-                  </label>
-                  <input
-                    type="time"
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={formData.time}
-                    onChange={(e) =>
-                      setFormData({ ...formData, time: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Reason for Visit
-                </label>
-                <textarea
-                  required
-                  rows="3"
-                  placeholder="Describe your symptoms or reason for visit..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={formData.reason}
-                  onChange={(e) =>
-                    setFormData({ ...formData, reason: e.target.value })
-                  }
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition"
-              >
-                Book Appointment
-              </button>
-            </form>
-          </div>
+        {showBooking && (
+          <BookAppointment
+            onClose={() => setShowBooking(false)}
+            onSuccess={handleBookingSuccess}
+          />
         )}
 
         <div className="space-y-4">

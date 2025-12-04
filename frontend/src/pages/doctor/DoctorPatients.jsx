@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "../../services/api";
 
 export default function DoctorPatients() {
+  const navigate = useNavigate();
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -167,7 +169,12 @@ export default function DoctorPatients() {
                           </span>
                         </td>
                         <td className="py-3 px-4">
-                          <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                          <button
+                            onClick={() =>
+                              navigate(`/doctor/patients/${patient._id}`)
+                            }
+                            className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                          >
                             View Details
                           </button>
                         </td>

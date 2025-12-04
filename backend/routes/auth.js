@@ -114,9 +114,55 @@ router.get("/patients", auth, async (req, res) => {
 router.get("/doctors", auth, async (req, res) => {
   try {
     const doctors = await User.find({ role: "doctor" }).select(
-      "name email _id"
+      "name email _id specialization experience consultationFee availability"
     );
     res.json(doctors);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Get doctor availability for a specific date
+router.get("/doctors/:id/availability", auth, async (req, res) => {
+  try {
+    const doctor = await User.findById(req.params.id).select("availability");
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    const { date } = req.query;
+    if (!date) {
+      return res.status(400).json({ message: "Date is required" });
+    }
+
+    const dayOfWeek = new Date(date).toLocaleDateString("en-US", {
+      weekday: "lowercase",
+    });
+
+    // Get doctor's available slots for that day
+    const availableSlots = doctor.availability.get(dayOfWeek) || [];
+
+    // Get booked appointments for that date
+    const Appointment = require("../models/Appointment");
+    const bookedAppointments = await Appointment.find({
+      doctorId: req.params.id,
+      date: new Date(date),
+      status: { $in: ["pending", "confirmed"] },
+    }).select("time");
+
+    const bookedTimes = bookedAppointments.map((apt) => apt.time);
+
+    // Filter out booked slots
+    const availableTimes = availableSlots.filter(
+      (slot) => !bookedTimes.includes(slot)
+    );
+
+    res.json({
+      date,
+      dayOfWeek,
+      availableSlots: availableTimes,
+      bookedSlots: bookedTimes,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

@@ -24,6 +24,36 @@ const userSchema = new mongoose.Schema({
     enum: ["patient", "doctor", "admin"],
     default: "patient",
   },
+  // Doctor-specific fields
+  specialization: {
+    type: String,
+    trim: true,
+  },
+  experience: {
+    type: Number,
+  },
+  availability: {
+    type: Map,
+    of: [String], // e.g., { "monday": ["09:00", "10:00", "11:00"], ... }
+    default: {},
+  },
+  consultationFee: {
+    type: Number,
+  },
+  // Patient-specific fields
+  phone: {
+    type: String,
+  },
+  dateOfBirth: {
+    type: Date,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female", "other"],
+  },
+  address: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

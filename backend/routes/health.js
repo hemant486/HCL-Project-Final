@@ -48,4 +48,36 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+// Get patient health info (for doctors)
+router.get("/:patientId", auth, async (req, res) => {
+  try {
+    if (req.user.role !== "doctor") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    const healthInfo = await HealthInfo.findOne({
+      userId: req.params.patientId,
+    }).populate("userId", "name email");
+    res.json(healthInfo || {});
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Update patient health info (for doctors)
+router.patch("/:patientId", auth, async (req, res) => {
+  try {
+    if (req.user.role !== "doctor") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    const healthInfo = await HealthInfo.findOneAndUpdate(
+      { userId: req.params.patientId },
+      { ...req.body, userId: req.params.patientId, lastUpdated: Date.now() },
+      { new: true, upsert: true }
+    );
+    res.json({ message: "Patient health info updated", healthInfo });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
 module.exports = router;
