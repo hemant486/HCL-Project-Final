@@ -135,12 +135,20 @@ router.get("/doctors/:id/availability", auth, async (req, res) => {
       return res.status(400).json({ message: "Date is required" });
     }
 
-    const dayOfWeek = new Date(date).toLocaleDateString("en-US", {
-      weekday: "lowercase",
-    });
+    const dayOfWeek = new Date(date)
+      .toLocaleDateString("en-US", {
+        weekday: "long",
+      })
+      .toLowerCase();
 
     // Get doctor's available slots for that day
-    const availableSlots = doctor.availability.get(dayOfWeek) || [];
+    // Handle both Map and plain object
+    let availableSlots = [];
+    if (doctor.availability instanceof Map) {
+      availableSlots = doctor.availability.get(dayOfWeek) || [];
+    } else if (doctor.availability && typeof doctor.availability === "object") {
+      availableSlots = doctor.availability[dayOfWeek] || [];
+    }
 
     // Get booked appointments for that date
     const Appointment = require("../models/Appointment");
@@ -162,8 +170,10 @@ router.get("/doctors/:id/availability", auth, async (req, res) => {
       dayOfWeek,
       availableSlots: availableTimes,
       bookedSlots: bookedTimes,
+      totalSlots: availableSlots.length,
     });
   } catch (error) {
+    console.error("Availability error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });

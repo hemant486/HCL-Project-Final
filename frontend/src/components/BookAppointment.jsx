@@ -36,9 +36,11 @@ export default function BookAppointment({ onClose, onSuccess }) {
       const res = await axios.get(
         `/auth/doctors/${selectedDoctor._id}/availability?date=${selectedDate}`
       );
-      setAvailableSlots(res.data.availableSlots);
+      console.log("Availability response:", res.data);
+      setAvailableSlots(res.data.availableSlots || []);
     } catch (error) {
       console.error("Error fetching availability:", error);
+      alert("Failed to fetch available time slots. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -217,12 +219,27 @@ export default function BookAppointment({ onClose, onSuccess }) {
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">
                       Available Time Slots
+                      <span className="text-sm text-gray-500 ml-2">
+                        (
+                        {new Date(selectedDate).toLocaleDateString("en-US", {
+                          weekday: "long",
+                        })}
+                        )
+                      </span>
                     </label>
                     {loading ? (
-                      <div className="text-center py-4">Loading slots...</div>
+                      <div className="text-center py-4">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                        <p className="mt-2 text-gray-600">Loading slots...</p>
+                      </div>
                     ) : availableSlots.length === 0 ? (
-                      <div className="text-center py-4 text-gray-500">
-                        No available slots for this date
+                      <div className="text-center py-8 bg-gray-50 rounded-lg">
+                        <p className="text-gray-500">
+                          No available slots for this date
+                        </p>
+                        <p className="text-sm text-gray-400 mt-1">
+                          Please try another date
+                        </p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
